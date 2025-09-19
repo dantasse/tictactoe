@@ -59,13 +59,14 @@ function App() {
       return
     }
 
+    setSquares(newSquares)
+
     // Check if board is full after player move
     if (newSquares.every(square => square !== '')) {
-      setSquares(newSquares)
+      setWinner("nobody");
       return
     }
 
-    setSquares(newSquares)
     setIsPlayerTurn(false)
 
     // Opponent move after a delay
@@ -114,9 +115,11 @@ function App() {
         </div>
       </div>
     </div>
+    {!isPlayerTurn && <h2>thinking...</h2>}
     {winner && (
       <div className="game-status">
-        <h2>{winner} wins!</h2>
+        {winner === "nobody" && <h2>cat's game</h2>}
+        {winner !== "nobody" && <h2>{winner} wins!</h2>}
       </div>
     )}
     </>
