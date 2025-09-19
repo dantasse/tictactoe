@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
   const [squares, setSquares] = useState<string[]>(Array(9).fill(''))
   const [winner, setWinner] = useState<string | null>(null)
   const [winningLine, setWinningLine] = useState<number[] | null>(null)
+  const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true)
 
   const checkWinner = (squares: string[]): { winner: string | null, line: number[] | null } => {
     const lines = [
@@ -27,18 +28,56 @@ function App() {
     return { winner: null, line: null }
   }
 
+  const makeOpponentMove = (currentSquares: string[]) => {
+    const emptySquares = currentSquares
+      .map((square, index) => square === '' ? index : null)
+      .filter(index => index !== null) as number[]
+    
+    if (emptySquares.length === 0) return currentSquares
+    
+    const randomIndex = emptySquares[Math.floor(Math.random() * emptySquares.length)]
+    const newSquares = [...currentSquares]
+    newSquares[randomIndex] = 'O'
+    
+    return newSquares
+  }
+
   const handleSquareClick = (index: number) => {
-    if (winner || squares[index] !== '') {
+    if (winner || squares[index] !== '' || !isPlayerTurn) {
       return
     }
 
+    // Player move
     const newSquares = [...squares]
     newSquares[index] = 'X'
     
-    const result = checkWinner(newSquares)
+    const playerResult = checkWinner(newSquares)
+    if (playerResult.winner) {
+      setSquares(newSquares)
+      setWinner(playerResult.winner)
+      setWinningLine(playerResult.line)
+      return
+    }
+
+    // Check if board is full after player move
+    if (newSquares.every(square => square !== '')) {
+      setSquares(newSquares)
+      return
+    }
+
     setSquares(newSquares)
-    setWinner(result.winner)
-    setWinningLine(result.line)
+    setIsPlayerTurn(false)
+
+    // Opponent move after a delay
+    setTimeout(() => {
+      const opponentSquares = makeOpponentMove(newSquares)
+      const opponentResult = checkWinner(opponentSquares)
+      
+      setSquares(opponentSquares)
+      setWinner(opponentResult.winner)
+      setWinningLine(opponentResult.line)
+      setIsPlayerTurn(true)
+    }, 500)
   }
 
   const renderSquare = (index: number) => {
