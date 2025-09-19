@@ -3,7 +3,8 @@ import './App.css'
 import { checkWinner, makeOpponentMove } from './gameLogic'
 
 function App() {
-  const [squares, setSquares] = useState<string[]>(Array(9).fill(''))
+  const BOARD_SIZE = 10
+  const [squares, setSquares] = useState<string[]>(Array(BOARD_SIZE * BOARD_SIZE).fill(''))
   const [winner, setWinner] = useState<string | null>(null)
   const [winningLine, setWinningLine] = useState<number[] | null>(null)
   const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true)
@@ -49,6 +50,13 @@ function App() {
     }, 200)
   }
 
+  const resetGame = () => {
+    setSquares(Array(BOARD_SIZE * BOARD_SIZE).fill(''))
+    setWinner(null)
+    setWinningLine(null)
+    setIsPlayerTurn(true)
+  }
+
   const renderSquare = (index: number) => {
     const isWinningSquare = winningLine && winningLine.includes(index)
     return (
@@ -66,21 +74,13 @@ function App() {
     <>
     <div className="game">
       <div className="game-board">
-        <div className="board-row">
-          {renderSquare(0)}
-          {renderSquare(1)}
-          {renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {renderSquare(3)}
-          {renderSquare(4)}
-          {renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {renderSquare(6)}
-          {renderSquare(7)}
-          {renderSquare(8)}
-        </div>
+        {Array.from({ length: BOARD_SIZE }, (_, row) => (
+          <div className="board-row" key={row}>
+            {Array.from({ length: BOARD_SIZE }, (_, col) => 
+              renderSquare(row * BOARD_SIZE + col)
+            )}
+          </div>
+        ))}
       </div>
     </div>
     {!isPlayerTurn && <h2>thinking...</h2>}
@@ -88,7 +88,11 @@ function App() {
       <div className="game-status">
         {winner === "nobody" && <h2>cat's game</h2>}
         {winner !== "nobody" && <h2>{winner} wins!</h2>}
+        <button onClick={resetGame} className="reset-button">Play Again</button>
       </div>
+    )}
+    {!winner && (
+      <button onClick={resetGame} className="reset-button">Reset Game</button>
     )}
     </>
   )

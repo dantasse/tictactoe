@@ -1,21 +1,77 @@
 export const checkWinner = (squares: string[]): { winner: string | null, line: number[] | null } => {
-  const lines = [
-    [0, 1, 2], // top row
-    [3, 4, 5], // middle row
-    [6, 7, 8], // bottom row
-    [0, 3, 6], // left column
-    [1, 4, 7], // middle column
-    [2, 5, 8], // right column
-    [0, 4, 8], // diagonal top-left to bottom-right
-    [2, 4, 6], // diagonal top-right to bottom-left
-  ]
+  const BOARD_SIZE = 10
+  const WIN_LENGTH = 4
 
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i]
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return { winner: squares[a], line: lines[i] }
+  // Check all possible 4-in-a-row combinations
+  for (let row = 0; row < BOARD_SIZE; row++) {
+    for (let col = 0; col < BOARD_SIZE; col++) {
+      const index = row * BOARD_SIZE + col
+      const player = squares[index]
+      
+      if (!player) continue
+
+      // Check horizontal (right)
+      if (col <= BOARD_SIZE - WIN_LENGTH) {
+        const line = []
+        let isWin = true
+        for (let i = 0; i < WIN_LENGTH; i++) {
+          const checkIndex = row * BOARD_SIZE + col + i
+          line.push(checkIndex)
+          if (squares[checkIndex] !== player) {
+            isWin = false
+            break
+          }
+        }
+        if (isWin) return { winner: player, line }
+      }
+
+      // Check vertical (down)
+      if (row <= BOARD_SIZE - WIN_LENGTH) {
+        const line = []
+        let isWin = true
+        for (let i = 0; i < WIN_LENGTH; i++) {
+          const checkIndex = (row + i) * BOARD_SIZE + col
+          line.push(checkIndex)
+          if (squares[checkIndex] !== player) {
+            isWin = false
+            break
+          }
+        }
+        if (isWin) return { winner: player, line }
+      }
+
+      // Check diagonal (down-right)
+      if (row <= BOARD_SIZE - WIN_LENGTH && col <= BOARD_SIZE - WIN_LENGTH) {
+        const line = []
+        let isWin = true
+        for (let i = 0; i < WIN_LENGTH; i++) {
+          const checkIndex = (row + i) * BOARD_SIZE + col + i
+          line.push(checkIndex)
+          if (squares[checkIndex] !== player) {
+            isWin = false
+            break
+          }
+        }
+        if (isWin) return { winner: player, line }
+      }
+
+      // Check diagonal (down-left)
+      if (row <= BOARD_SIZE - WIN_LENGTH && col >= WIN_LENGTH - 1) {
+        const line = []
+        let isWin = true
+        for (let i = 0; i < WIN_LENGTH; i++) {
+          const checkIndex = (row + i) * BOARD_SIZE + col - i
+          line.push(checkIndex)
+          if (squares[checkIndex] !== player) {
+            isWin = false
+            break
+          }
+        }
+        if (isWin) return { winner: player, line }
+      }
     }
   }
+  
   return { winner: null, line: null }
 }
 
@@ -26,7 +82,7 @@ export const makeOpponentMove = (currentSquares: string[]) => {
   
   if (emptySquares.length === 0) return currentSquares
 
-  // Check if opponent can win
+  // 1. Check if opponent can win
   for (const index of emptySquares) {
     const testSquares = [...currentSquares]
     testSquares[index] = 'O'
@@ -37,7 +93,7 @@ export const makeOpponentMove = (currentSquares: string[]) => {
     }
   }
 
-  // Check if need to block player from winning
+  // 2. Check if need to block player from winning
   for (const index of emptySquares) {
     const testSquares = [...currentSquares]
     testSquares[index] = 'X'
@@ -48,24 +104,7 @@ export const makeOpponentMove = (currentSquares: string[]) => {
     }
   }
 
-  // Take center if available
-  if (currentSquares[4] === '') {
-    const newSquares = [...currentSquares]
-    newSquares[4] = 'O'
-    return newSquares
-  }
-
-  // Take corners if available
-  const corners = [0, 2, 6, 8]
-  const availableCorners = corners.filter(index => currentSquares[index] === '')
-  if (availableCorners.length > 0) {
-    const randomCorner = availableCorners[Math.floor(Math.random() * availableCorners.length)]
-    const newSquares = [...currentSquares]
-    newSquares[randomCorner] = 'O'
-    return newSquares
-  }
-
-  // Take any remaining square
+  // 3. Move randomly to any available square
   const randomIndex = emptySquares[Math.floor(Math.random() * emptySquares.length)]
   const newSquares = [...currentSquares]
   newSquares[randomIndex] = 'O'
