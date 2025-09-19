@@ -9,7 +9,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
 }
 
 .game-board {
@@ -45,3 +44,25 @@
   outline: none;
   background-color: #e0e0e0;
 }
+
+.winning-square {
+  background-color: #90EE90 !important;
+  position: relative;
+}
+
+.game-status {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.game-status h2 {
+  color: #333;
+  font-size: 24px;
+  margin: 0;
+  padding: 10px;
+  background-color: #f0f8ff;
+  border: 2px solid #4CAF50;
+  border-radius: 8px;
+  display: inline-block;
+}
+
