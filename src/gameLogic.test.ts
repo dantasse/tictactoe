@@ -151,8 +151,8 @@ describe('makeOpponentMove - Simplified AI (win/block/random)', () => {
     })
   })
 
-  describe('Random move when no win/block needed', () => {
-    it('should make a random move when no immediate threats', () => {
+  describe('Minimax AI behavior', () => {
+    it('should make an intelligent move when no immediate threats', () => {
       const board = createEmptyBoard()
       board[0] = 'X'
       board[50] = 'O'
@@ -170,9 +170,22 @@ describe('makeOpponentMove - Simplified AI (win/block/random)', () => {
       const result = makeOpponentMove(board)
       expect(result).toEqual(board) // Should return unchanged
     })
+
+    it('should make strategic moves to build winning lines', () => {
+      const board = createEmptyBoard()
+      board[0] = 'O'
+      board[50] = 'X'
+      const result = makeOpponentMove(board)
+      
+      // Should place O somewhere that helps build a line
+      const newOMoves = result.filter((square, index) => 
+        square === 'O' && board[index] === ''
+      )
+      expect(newOMoves).toHaveLength(1)
+    })
   })
 
-  describe('Priority order: win > block > random', () => {
+  describe('Priority order: win > block > strategic', () => {
     it('should prioritize winning over blocking', () => {
       const board = createEmptyBoard()
       // O can win
@@ -194,6 +207,17 @@ describe('makeOpponentMove - Simplified AI (win/block/random)', () => {
       
       const result = makeOpponentMove(board)
       expect(result[3]).toBe('O') // Should block X
+    })
+
+    it('should prioritize blocking immediate threats', () => {
+      const board = createEmptyBoard()
+      // X has 3 in a row, about to win
+      board[0] = board[1] = board[2] = 'X'
+      // O has 2 in a row but not immediate threat
+      board[20] = board[21] = 'O'
+      
+      const result = makeOpponentMove(board)
+      expect(result[3]).toBe('O') // Should block X's winning move
     })
   })
 })
