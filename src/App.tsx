@@ -34,7 +34,47 @@ function App() {
       .filter(index => index !== null) as number[]
     
     if (emptySquares.length === 0) return currentSquares
-    
+
+    // Check if opponent can win
+    for (const index of emptySquares) {
+      const testSquares = [...currentSquares]
+      testSquares[index] = 'O'
+      if (checkWinner(testSquares).winner === 'O') {
+        const newSquares = [...currentSquares]
+        newSquares[index] = 'O'
+        return newSquares
+      }
+    }
+
+    // Check if need to block player from winning
+    for (const index of emptySquares) {
+      const testSquares = [...currentSquares]
+      testSquares[index] = 'X'
+      if (checkWinner(testSquares).winner === 'X') {
+        const newSquares = [...currentSquares]
+        newSquares[index] = 'O'
+        return newSquares
+      }
+    }
+
+    // Take center if available
+    if (currentSquares[4] === '') {
+      const newSquares = [...currentSquares]
+      newSquares[4] = 'O'
+      return newSquares
+    }
+
+    // Take corners if available
+    const corners = [0, 2, 6, 8]
+    const availableCorners = corners.filter(index => currentSquares[index] === '')
+    if (availableCorners.length > 0) {
+      const randomCorner = availableCorners[Math.floor(Math.random() * availableCorners.length)]
+      const newSquares = [...currentSquares]
+      newSquares[randomCorner] = 'O'
+      return newSquares
+    }
+
+    // Take any remaining square
     const randomIndex = emptySquares[Math.floor(Math.random() * emptySquares.length)]
     const newSquares = [...currentSquares]
     newSquares[randomIndex] = 'O'
