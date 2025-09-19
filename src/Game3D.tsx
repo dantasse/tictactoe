@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
 import { Mesh } from 'three'
 import { checkWinner, makeOpponentMove, get3DCoords, createEmpty3DBoard } from './gameLogic3D'

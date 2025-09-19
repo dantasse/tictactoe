@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { makeOpponentMove, checkWinner } from './gameLogic'
+import { makeOpponentMove, checkWinner } from './gameLogic3D'
 
 describe('makeOpponentMove', () => {
   beforeEach(() => {
