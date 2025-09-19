@@ -10,6 +10,8 @@ install npm, then:
 - npm run dev
 - visit localhost:5173
 
+Or try at https://www.dantasse.com/things/tictactoe.html or https://www.dantasse.com/things/tictactoe3d.html
+
 ## To play
 
 It's a 10x10 "tic tac toe" vs an AI, where you need to get 4 in a row to win.
