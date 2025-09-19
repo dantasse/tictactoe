@@ -1,69 +1,42 @@
-# React + TypeScript + Vite
+# Tic Tac Toe
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A thrilling game of adventure and intrigue
 
-Currently, two official plugins are available:
+## To run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+install npm, then:
 
-## Expanding the ESLint configuration
+- npm install
+- npm run dev
+- visit localhost:5173
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## To play
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+It's a 10x10 "tic tac toe" vs an AI, where you need to get 4 in a row to win.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 3d tic tac toe
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Ok I implemented this too; to play it, checkout the `3d` branch, then npm install and npm run dev.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Approach
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Honestly, with Open Hands, making tic tac toe was pretty easy. The plan was:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- make a grid that you can click to make each square an X, and it says you win if you get 3 in a row
+- make an opponent that makes some moves
+- make the opponent's moves actually smart
+- then, because 3x3 tic tac toe is basically solved, that's it! But let's make it harder: try a larger board (and 4 in a row, because 3 in a row gets pretty trivial)
+- also, because this is not solved, we need a smarter solution, and minimax is, as far as I know, the simplest not-trivial game tree search algorithm, so implement that for the computer's moves
+- and then try rendering this in 3d
+
+But most of these lines were solved by asking Open Hands to do them. So I'm largely guiding the LLM, rather than writing myself. In a sense, the main challenge is understanding the implementation, so I know if it goes off the rails and how, or if it's avoiding some edge cases or otherwise not doing what I want.
+
+## Tools used, and how
+All Open Hands. My approach is something like "specify well, then code review" - I want to know what it's doing. I like that it asks me as it goes, so I can review each step, instead of just getting a mountain of code at the end.
+
+Because time is short, I think I fell short of 100% understanding, especially in the minimax implementation and three.js code. When I'm doing similar things in production code, I'd spend more time with it and/or ask someone else to look through it with me.
+
+## With more time
+
+I suppose I'd dig into the minimax algorithm to make the computer better, because it's pretty easy as is.
+I guess we could make it multiplayer as well, though that would require a server for shared state, so it would add some implementation time.
